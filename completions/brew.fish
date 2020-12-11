@@ -103,11 +103,13 @@ function __suggest_brew_formulae_all -d 'Lists all available formulae with their
 end
 
 function __suggest_brew_formulae_installed
-    brew list
+    set -xg __COMPLETE_PREVIEW "brew info {1}"
+    set -xg __COMPLETE_PREVIEW_CACHE_FOR "2 days"
+    varcache BREW_LEAVES 'brew leaves' '2 days' compressed
 end
 
 function __suggest_brew_formulae_pinned
-    brew list --pinned --versions \
+    brew list --formulae --pinned --versions \
         # replace first space with tab to make the following a description in the completions list:
         | string replace -r '\s' '\t'
 end
@@ -127,7 +129,7 @@ function __suggest_brew_formulae_multiple_versions -d "List of installed formula
     # NOTE: this is bad because it's slower than calling `brew list --versions --multiple` and doesn't use any cache:
     # brew ruby -e 'Formula.installed.map{ |f| puts (f.full_name + "\t" + f.installed_kegs.map{ |keg| keg.version.to_s }.join(" ")) }'
 
-    brew list --versions --multiple \
+    brew list --formulae --versions --multiple \
         # replace first space with tab to make the following a description in the completions list:
         | string replace -r '\s' '\t' \
         # a more visible versions separator:
@@ -141,7 +143,7 @@ function __suggest_brew_formula_versions -a formula -d "List of versions for a g
     #     .each{ |obj| puts(obj['installed'].map{ |obj| obj['version'] }) }
     # "
 
-    brew list --versions $formula \
+    brew list --formulae --versions $formula \
         # cut off the first word in the output which is the formula name
         | string replace -r '\S+\s+' '' \
         # make it a list
