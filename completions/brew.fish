@@ -100,7 +100,7 @@ function __suggest_brew_formulae_all -d 'Lists all available formulae with their
     else
         begin
             brew formulae
-            brew formulae --cask
+            brew casks
         end
     end
 end
